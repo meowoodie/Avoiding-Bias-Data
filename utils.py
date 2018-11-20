@@ -38,4 +38,4 @@ def extract_keywords_from_corpus(
 
 if __name__ == '__main__':
 
-    extract_keywords_from_corpus(keywords=['burglary', 'black', 'male', 'black_male'])
+    extract_keywords_from_corpus(keywords=['stole', 'black', 'males', 'black_males'])
