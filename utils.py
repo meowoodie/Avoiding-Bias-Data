@@ -20,7 +20,7 @@ def extract_keywords_from_corpus(
     keywords,
     dict_path='/Users/woodie/Desktop/workspace/Event-Series-Detection/resource/dict/10k.bigram.dict',
     corpus_path='/Users/woodie/Desktop/workspace/Event-Series-Detection/resource/corpus/10k.bigram.tfidf.corpus',
-    result_path='data/burglary.biased.keywords.txt'):
+    result_path='data/all.biased.keywords.txt'):
     # get dictionary
     ngram_dict = corpora.Dictionary.load(dict_path)
     print(ngram_dict, file=sys.stderr)
@@ -38,4 +38,4 @@ def extract_keywords_from_corpus(
 
 if __name__ == '__main__':
 
-    extract_keywords_from_corpus(keywords=['stole', 'black', 'males', 'black_males'])
+    extract_keywords_from_corpus(keywords=['stole', 'robbery', 'black', 'males', 'black_males'])
