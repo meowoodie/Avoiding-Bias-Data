@@ -9,6 +9,7 @@ library(ggplot2)
 # configuration
 file.path = '/Users/woodie/Desktop/workspace/Avoiding-Bias-Data/data/robbery.biased.keywords.txt'
 keywords  = c('black', 'males', 'black_males')
+target    = c('robbery')
 
 # data preprocessing
 keywords.df = read.csv(file=file.path, header=FALSE, sep=",")
@@ -55,12 +56,12 @@ get_upper_tri = function(cormat){
 # data preprocessing
 keywords.df = read.csv(file=file.path, header=FALSE, sep=",")
 colnames(keywords.df) = keywords
-# keywords.df = keywords.df[rowSums(keywords.df <= 0) <= 0, ]
 
+# calculate covariance matrix by extracting keywords pairs from raw data
 cormat.list = list() 
 pairs       = combn(keywords, 2)
 for(i in 1:ncol(pairs)) {
-  comparison.df = keywords.df[, pairs[,i]]                              # get cols of specific keywords
+  comparison.df = keywords.df[, pairs[,i]]                          # get cols of specific keywords
   comparison.df = comparison.df[rowSums(comparison.df <= 0) <= 0, ] # remove rows with zero value
   cormat        = round(cor(comparison.df), 2)
   upper.cormat  = get_upper_tri(cormat)
