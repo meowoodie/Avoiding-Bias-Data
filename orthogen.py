@@ -10,7 +10,7 @@ information loss.
 import sys
 import arrow
 import numpy as np
-from numpy import matmul, ones, zeros, eye
+from numpy import matmul, multiply, ones, zeros, eye
 from numpy.linalg import inv, norm
 
 class OrthoDataGen(object):
@@ -48,10 +48,11 @@ class OrthoDataGen(object):
         THETA_DETAULT = 1.
         # update each column of matrix U and S.
         for j in range(self.k):
-            print('[%s] updating %d/%d ...' % (arrow.now(), j, self.k), file=sys.stderr)
+            print('[%s] updating %d/%d ...' % (arrow.now(), j+1, self.k), file=sys.stderr)
             # stop when changes in u_j and s_j are sufficiently small
             last_s_j = zeros((self.n, 1))
             last_u_j = zeros((self.p, 1))
+            i = 0
             while self.change_measure(last_s_j, self.S[:, j], tol) or \
                   self.change_measure(last_u_j, self.U[:, j], tol):
                 # update last s_j, u_j
@@ -60,30 +61,49 @@ class OrthoDataGen(object):
                 P_j          = eye(self.n) - sum([ matmul(self.S[:, l], self.S[:, l].T) for l in range(j-1) ])
                 beta_j       = matmul(matmul(matmul(matmul(inv(matmul(self.Z.T, self.Z)), self.Z.T), P_j), self.X), self.U[:, j])
                 # update s_j
-                # s_j is the column of matrix U, which len(s_j) = n, j = 1, ..., k
+                # s_j is the column of matrix U, where len(s_j) = n, j = 1, ..., k
                 unnorm_s_j   = matmul(matmul(P_j, self.X), self.U[:, j]) - matmul(self.Z, beta_j)
                 self.S[:, j] = unnorm_s_j / norm(unnorm_s_j + 1e-10)
                 # update u_j
-                # u_j is the column of matrix S, which len(u_j) = p, j = 1, ..., k
+                # u_j is the column of matrix S, where len(u_j) = p, j = 1, ..., k
                 XT_sj        = matmul(self.X.T, self.S[:, j])
-                theta        = 0 if norm(XT_sj, ord=1) < t else THETA_DETAULT
+                theta        = 0 if norm(XT_sj, ord=1) <= t else THETA_DETAULT
                 S_theta_x    = self.soft_threshold_operator(theta, XT_sj)
                 self.U[:, j] = S_theta_x / norm(S_theta_x + 1e-10)
+                # log information if verbose is true
                 if verbose:
-                    print('[%s] ||u_j||_1 = %.3f' % (arrow.now(), norm(self.U[:, j], ord=1)), file=sys.stderr)
-                    print('[%s] s_j change is %.3f, u_j change is %.3f' %
+                    print('[%s] ---------------------------------' % arrow.now(), file=sys.stderr)
+                    print('[%s] iter %d' % (arrow.now(), i), file=sys.stderr)
+                    print('[%s]\t||u_j||_1 = %.3f' %
+                        (arrow.now(), norm(self.U[:, j], ord=1)),
+                        file=sys.stderr)
+                    print('[%s]\ts_j change is %.3f, u_j change is %.3f' %
                         (arrow.now(),
                          norm(last_s_j - self.S[:, j]),
                          norm(last_u_j - self.U[:, j])),
                         file=sys.stderr)
-                    print('[%s] Frobenius measure is %.3f' %
+                    print('[%s]\tFrobenius measure is %.3f' %
                         (arrow.now(), norm(self.X - matmul(odg.S, odg.U.T), ord='fro')),
                         file=sys.stderr)
+                    i += 1
+
+    def reconstruct(self):
+        '''
+        Reconstruct X_hat
+        '''
+        # d_j = s_j^T * X * u_j.
+        d = [ (matmul(matmul(self.S[:, j].T, self.X), self.U[:, j]) * self.S[:, j]).tolist()
+            for j in range(self.k) ]
+        # S denote the n x k matrix with columns d_j * s_j.
+        # U is the p x k sparse matrix with rows u_j, j = 1, ..., k
+        # return X_hat = S * U^T
+        X_hat = matmul(np.array(d).T, self.U.T)
+        return X_hat
 
     @staticmethod
     def soft_threshold_operator(theta, x):
         indicator_func = ones(len(x)) * (abs(x) >= theta)
-        return np.sign(x) * (abs(x) - theta) * indicator_func
+        return multiply(multiply(np.sign(x), (abs(x) - theta)), indicator_func)
 
     @staticmethod
     def change_measure(mat_a, mat_b, tol):
@@ -91,12 +111,12 @@ class OrthoDataGen(object):
         return True if measure > tol else False
 
 
-
+# Unittest on a simple example
 if __name__ == '__main__':
     X = np.array([
         [1, 1, 0, 0.1, 0,   0],
-        [1, 1, 0, 0,   0,   0],
-        [0, 0, 1, 1,   0,   0],
+        [1, 1, 0, 0,   1,   1],
+        [0, 0, 1, 1,   1,   1],
         [0, 0, 1, 1,   0.1, 0],
         [0, 0, 0, 0,   1,   1]
     ])
@@ -109,5 +129,5 @@ if __name__ == '__main__':
     ])
     k = 3
     odg = OrthoDataGen(X, Z, k)
-    odg.sog(t=3, tol=1e-2)
-    print(matmul(odg.S, odg.U.T))
+    odg.sog(t=1.414, tol=1e-2)
+    print(odg.reconstruct())
