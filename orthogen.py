@@ -111,12 +111,13 @@ class OrthoDataGen(object):
         return True if measure > tol else False
 
 
+
 # Unittest on a simple example
 if __name__ == '__main__':
     X = np.array([
         [1, 1, 0, 0.1, 0,   0],
-        [1, 1, 0, 0,   1,   1],
-        [0, 0, 1, 1,   1,   1],
+        [1, 1, 0, 0,   0,   0],
+        [0, 0, 1, 1,   0,   0],
         [0, 0, 1, 1,   0.1, 0],
         [0, 0, 0, 0,   1,   1]
     ])

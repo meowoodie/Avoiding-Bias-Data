@@ -1,2 +1,94 @@
-# Avoiding-Bias-Data
-A method to preprocess the training data, producing an adjusted dataset that is independent of the group variable with minimum information loss.
+Avoiding-Bias-Data
+===
+
+It is a method to preprocess the training data, producing an adjusted dataset that is independent of the group variable with minimum information loss from the [paper](https://arxiv.org/abs/1810.08255) in the references.
+
+### Examples
+
+```python
+# raw data matrix
+X = np.array([
+    [1, 1, 0, 0.1, 0,   0],
+    [1, 1, 0, 0,   0,   0],
+    [0, 0, 1, 1,   0,   0],
+    [0, 0, 1, 1,   0.1, 0],
+    [0, 0, 0, 0,   1,   1]
+])
+# group variable
+Z = np.array([
+    [1,   1],
+    [1,   1],
+    [0,   0.1],
+    [0.1, 0],
+    [0,   0.1]
+])
+# rank
+k = 3
+# initiate an orthogonal data generator object
+odg = OrthoDataGen(X, Z, k)
+# train via sparse orthogonal to subgroup algorithm
+odg.sog(t=1.414, tol=1e-2)
+# print the reconstructed data matrix
+print(odg.reconstruct())
+```
+
+```bash
+[2018-11-23T13:14:20.558127-05:00] n = 5, p = 6, k = 3, X is 5 x 6, Z is 5 x 2.
+[2018-11-23T13:14:20.558291-05:00] updating 1/3 ...
+[2018-11-23T13:14:20.558923-05:00] ---------------------------------
+[2018-11-23T13:14:20.559021-05:00] iter 0
+[2018-11-23T13:14:20.559128-05:00]	||u_j||_1 = 1.414
+[2018-11-23T13:14:20.559255-05:00]	s_j change is 1.418, u_j change is 0.999
+[2018-11-23T13:14:20.559390-05:00]	Frobenius measure is 3.371
+[2018-11-23T13:14:20.559649-05:00] ---------------------------------
+[2018-11-23T13:14:20.559771-05:00] iter 1
+[2018-11-23T13:14:20.559907-05:00]	||u_j||_1 = 1.414
+[2018-11-23T13:14:20.560058-05:00]	s_j change is 0.315, u_j change is 0.001
+[2018-11-23T13:14:20.560215-05:00]	Frobenius measure is 3.353
+[2018-11-23T13:14:20.560491-05:00] ---------------------------------
+[2018-11-23T13:14:20.560588-05:00] iter 2
+[2018-11-23T13:14:20.560691-05:00]	||u_j||_1 = 1.414
+[2018-11-23T13:14:20.560814-05:00]	s_j change is 0.000, u_j change is 0.000
+[2018-11-23T13:14:20.560951-05:00]	Frobenius measure is 3.353
+[2018-11-23T13:14:20.561112-05:00] updating 2/3 ...
+[2018-11-23T13:14:20.561403-05:00] ---------------------------------
+[2018-11-23T13:14:20.561501-05:00] iter 0
+[2018-11-23T13:14:20.561601-05:00]	||u_j||_1 = 0.000
+[2018-11-23T13:14:20.561720-05:00]	s_j change is 1.075, u_j change is 1.336
+[2018-11-23T13:14:20.561850-05:00]	Frobenius measure is 2.574
+[2018-11-23T13:14:20.562100-05:00] ---------------------------------
+[2018-11-23T13:14:20.562191-05:00] iter 1
+[2018-11-23T13:14:20.562292-05:00]	||u_j||_1 = 0.000
+[2018-11-23T13:14:20.562410-05:00]	s_j change is 1.000, u_j change is 0.000
+[2018-11-23T13:14:20.562539-05:00]	Frobenius measure is 2.574
+[2018-11-23T13:14:20.562786-05:00] ---------------------------------
+[2018-11-23T13:14:20.562881-05:00] iter 2
+[2018-11-23T13:14:20.562982-05:00]	||u_j||_1 = 0.000
+[2018-11-23T13:14:20.563102-05:00]	s_j change is 0.000, u_j change is 0.000
+[2018-11-23T13:14:20.563232-05:00]	Frobenius measure is 2.574
+[2018-11-23T13:14:20.563382-05:00] updating 3/3 ...
+[2018-11-23T13:14:20.563661-05:00] ---------------------------------
+[2018-11-23T13:14:20.563755-05:00] iter 0
+[2018-11-23T13:14:20.563858-05:00]	||u_j||_1 = 1.414
+[2018-11-23T13:14:20.563979-05:00]	s_j change is 2.083, u_j change is 2.033
+[2018-11-23T13:14:20.564125-05:00]	Frobenius measure is 2.498
+[2018-11-23T13:14:20.564374-05:00] ---------------------------------
+[2018-11-23T13:14:20.564465-05:00] iter 1
+[2018-11-23T13:14:20.564584-05:00]	||u_j||_1 = 0.000
+[2018-11-23T13:14:20.564705-05:00]	s_j change is 1.957, u_j change is 1.000
+[2018-11-23T13:14:20.564833-05:00]	Frobenius measure is 2.651
+[2018-11-23T13:14:20.565089-05:00] ---------------------------------
+[2018-11-23T13:14:20.565184-05:00] iter 2
+[2018-11-23T13:14:20.565285-05:00]	||u_j||_1 = 0.000
+[2018-11-23T13:14:20.565402-05:00]	s_j change is 1.000, u_j change is 0.000
+[2018-11-23T13:14:20.565531-05:00]	Frobenius measure is 2.651
+[2018-11-23T13:14:20.565780-05:00] ---------------------------------
+[2018-11-23T13:14:20.565871-05:00] iter 3
+[2018-11-23T13:14:20.565973-05:00]	||u_j||_1 = 0.000
+[2018-11-23T13:14:20.566090-05:00]	s_j change is 0.000, u_j change is 0.000
+[2018-11-23T13:14:20.566218-05:00]	Frobenius measure is 2.651
+```
+
+### References
+
+- [Emanuele Aliverti, Kristian Lum, James E. Johndrow, David B. Dunson. "Removing the influence of a group variable in high-dimensional predictive modelling"](https://arxiv.org/abs/1810.08255)
