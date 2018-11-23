@@ -94,6 +94,74 @@ print(odg.reconstruct())
  [ 0.          0.         -0.00499043 -0.00496914  0.          0.        ]]
 ```
 
+### Real data
+
+```python
+# keywords that we are studying
+X_KEYWORDS   = ['stole', 'robbery', 'males']
+Z_KEYWORDS   = ['black', 'black_males']
+
+# load raw data matrix X (exclude biased keywords) and subgroup variable Z (biased keywords)
+_, XZ = utils.extract_keywords_from_corpus(keywords=all_keyword)
+
+# configurations
+all_keyword   = X_KEYWORDS + Z_KEYWORDS
+x_col_idx     = [ ALL_KEYWORDS.index(keyword) for keyword in X_KEYWORDS ]
+z_col_idx     = [ ALL_KEYWORDS.index(keyword) for keyword in Z_KEYWORDS ]
+valid_row_idx = np.where(XZ.sum(axis=1) > 0)[0]
+
+# remove rows with all zero entries
+XZ = XZ[valid_row_idx, :]
+print('[%s] raw data matrix is %d x %d' % (arrow.now(), XZ.shape[0], XZ.shape[1]), file=sys.stderr)
+# split XZ into X and Z according to their keywords
+X = XZ[:, x_col_idx]
+Z = XZ[:, z_col_idx]
+# initiate orthogonal data generator
+odg = orthogen.OrthoDataGen(X, Z, k=2)
+odg.sog(t=1.414, tol=1e-2)
+# X_hat = odg.reconstruct()
+```
+
+```bash
+Dictionary(14281 unique tokens: ['use_cell', 'raining', 'ward_unit', 'group_males', 'call_regards']...)
+MmCorpus(10056 documents, 14281 features, 1016964 non-zero entries)
+extraced keywords ids: [1056, 8633, 8011, 9072, 13018]
+(3025, 5)
+[2018-11-23T14:25:11.580836-05:00] n = 3025, p = 3, k = 2, X is 3025 x 3, Z is 3025 x 2.
+[2018-11-23T14:25:11.581021-05:00] updating 1/2 ...
+[2018-11-23T14:25:16.807641-05:00] ---------------------------------
+[2018-11-23T14:25:16.807786-05:00] iter 0
+[2018-11-23T14:25:16.807891-05:00]	||u_j||_1 = 1.000
+[2018-11-23T14:25:16.808038-05:00]	s_j change is 31.264, u_j change is 0.809
+[2018-11-23T14:25:16.808195-05:00]	Frobenius measure is 37.196
+[2018-11-23T14:25:16.861449-05:00] ---------------------------------
+[2018-11-23T14:25:16.861593-05:00] iter 1
+[2018-11-23T14:25:16.861720-05:00]	||u_j||_1 = 1.000
+[2018-11-23T14:25:16.861869-05:00]	s_j change is 0.558, u_j change is 0.000
+[2018-11-23T14:25:16.862027-05:00]	Frobenius measure is 37.174
+[2018-11-23T14:25:16.904917-05:00] ---------------------------------
+[2018-11-23T14:25:16.905060-05:00] iter 2
+[2018-11-23T14:25:16.905167-05:00]	||u_j||_1 = 1.000
+[2018-11-23T14:25:16.905317-05:00]	s_j change is 0.000, u_j change is 0.000
+[2018-11-23T14:25:16.905464-05:00]	Frobenius measure is 37.174
+[2018-11-23T14:25:16.905680-05:00] updating 2/2 ...
+[2018-11-23T14:25:22.033835-05:00] ---------------------------------
+[2018-11-23T14:25:22.033988-05:00] iter 0
+[2018-11-23T14:25:22.034124-05:00]	||u_j||_1 = 1.000
+[2018-11-23T14:25:22.034260-05:00]	s_j change is 31.402, u_j change is 1.006
+[2018-11-23T14:25:22.034417-05:00]	Frobenius measure is 2.768
+[2018-11-23T14:25:22.086285-05:00] ---------------------------------
+[2018-11-23T14:25:22.086430-05:00] iter 1
+[2018-11-23T14:25:22.086558-05:00]	||u_j||_1 = 1.000
+[2018-11-23T14:25:22.086692-05:00]	s_j change is 0.672, u_j change is 0.000
+[2018-11-23T14:25:22.086847-05:00]	Frobenius measure is 2.659
+[2018-11-23T14:25:22.129671-05:00] ---------------------------------
+[2018-11-23T14:25:22.129830-05:00] iter 2
+[2018-11-23T14:25:22.129968-05:00]	||u_j||_1 = 1.000
+[2018-11-23T14:25:22.130107-05:00]	s_j change is 0.000, u_j change is 0.000
+[2018-11-23T14:25:22.130275-05:00]	Frobenius measure is 2.659
+```
+
 ### References
 
 - [Emanuele Aliverti, Kristian Lum, James E. Johndrow, David B. Dunson. "Removing the influence of a group variable in high-dimensional predictive modelling"](https://arxiv.org/abs/1810.08255)

@@ -83,7 +83,7 @@ class OrthoDataGen(object):
                          norm(last_u_j - self.U[:, j])),
                         file=sys.stderr)
                     print('[%s]\tFrobenius measure is %.3f' %
-                        (arrow.now(), norm(self.X - matmul(odg.S, odg.U.T), ord='fro')),
+                        (arrow.now(), norm(self.X - matmul(self.S, self.U.T), ord='fro')),
                         file=sys.stderr)
                     i += 1
 
@@ -124,11 +124,11 @@ if __name__ == '__main__':
     Z = np.array([
         [1,   1],
         [1,   1],
-        [0,   0.1],
-        [0.1, 0],
-        [0,   0.1]
+        [1,   1.1],
+        [1.1, 1],
+        [1,   1.1]
     ])
-    k = 3
+    k   = 3
     odg = OrthoDataGen(X, Z, k)
-    odg.sog(t=1.414, tol=1e-2)
+    odg.sog(t=1.529, tol=1e-2)
     print(odg.reconstruct())
