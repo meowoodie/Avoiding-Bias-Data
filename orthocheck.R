@@ -47,7 +47,7 @@ p + stat_cor(aes(color = keywords), label.y = 0.24)
 ## Covariance matrix plot
 
 # configuration
-file.path = '/Users/woodie/Desktop/workspace/Avoiding-Bias-Data/data/recon.9.biased.keywords.txt'
+file.path = '/Users/woodie/Desktop/workspace/Avoiding-Bias-Data/data/debug.recon.9.biased.keywords.txt'
 keywords  = c('burglary', 'robbery', 'carjacking', 'stole', 'jewelry', 'arrestee', 
               'shot', 'black', 'male', 'males', 'black_male', 'black_males')
 

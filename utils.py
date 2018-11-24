@@ -20,7 +20,8 @@ def extract_keywords_from_corpus(
     keywords,
     dict_path='/Users/woodie/Desktop/workspace/Event-Series-Detection/resource/dict/10k.bigram.dict',
     corpus_path='/Users/woodie/Desktop/workspace/Event-Series-Detection/resource/corpus/10k.bigram.tfidf.corpus',
-    result_path='data/all.biased.keywords.txt'):
+    result_path='data/9.biased.keywords.txt',
+    savetxt=True):
     # get dictionary
     ngram_dict = corpora.Dictionary.load(dict_path)
     print(ngram_dict, file=sys.stderr)
@@ -32,10 +33,15 @@ def extract_keywords_from_corpus(
     dense_corpus = gensim.matutils.corpus2dense(corpus_tfidf, num_terms=len(ngram_dict)).transpose()
     keyword_ids = [ ngram_dict.token2id[keyword] for keyword in keywords]
     print('extraced keywords ids: %s' % keyword_ids, file=sys.stderr)
-    results = dense_corpus[:, keyword_ids]
-    np.savetxt(result_path, results, delimiter=',')
+    keywords_mat    = dense_corpus[:, keyword_ids]
+    nonkeywords_mat = np.delete(dense_corpus, keyword_ids, axis=1)
+    if savetxt:
+        np.savetxt(result_path, keywords_mat, delimiter=',')
+    return nonkeywords_mat, keywords_mat
 
 
 if __name__ == '__main__':
 
-    extract_keywords_from_corpus(keywords=['stole', 'robbery', 'black', 'males', 'black_males'])
+    extract_keywords_from_corpus(keywords=[
+        'burglary', 'robbery', 'carjacking', 'stole', 'jewelry', 'arrestee',
+        'shot', 'black', 'male', 'males', 'black_male', 'black_males'])
