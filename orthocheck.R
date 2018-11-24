@@ -47,7 +47,7 @@ p + stat_cor(aes(color = keywords), label.y = 0.24)
 ## Covariance matrix plot
 
 # configuration
-file.path = '/Users/woodie/Desktop/workspace/Avoiding-Bias-Data/data/9.biased.keywords.txt'
+file.path = '/Users/woodie/Desktop/workspace/Avoiding-Bias-Data/data/recon.9.biased.keywords.txt'
 keywords  = c('burglary', 'robbery', 'carjacking', 'stole', 'jewelry', 'arrestee', 
               'shot', 'black', 'male', 'males', 'black_male', 'black_males')
 
@@ -66,7 +66,7 @@ cormat.list = list()
 pairs       = combn(keywords, 2)
 for(i in 1:ncol(pairs)) {
   comparison.df = keywords.df[, pairs[,i]]                          # get cols of specific keywords
-  comparison.df = comparison.df[rowSums(comparison.df <= 0) <= 0, ] # remove rows with zero value
+  # comparison.df = comparison.df[rowSums(comparison.df <= 0) <= 0, ] # remove rows with zero value
   # zero padding for those pairs of keywords without data entries
   if (nrow(comparison.df) <= 1){
     cormat.list[[i]] = data.frame('Var1'=pairs[,i][1], 'Var2'=pairs[,i][2], 'value'=0)
@@ -81,16 +81,15 @@ for(i in 1:ncol(pairs)) {
 }
 merged.cormat = do.call(rbind, cormat.list)
 merged.cormat = unique(merged.cormat) # remove duplicate rows in dataframe
-merged.cormat$AbsValue = abs(merged.cormat$value)
 
 # matrix plot
 cust_breaks = keywords # reorder breaks for the plot
-ggheatmap   = ggplot(merged.cormat, aes(Var2, Var1, fill = AbsValue)) +
+ggheatmap   = ggplot(merged.cormat, aes(Var2, Var1, fill = value)) +
   scale_x_discrete(limits=cust_breaks) + 
   scale_y_discrete(limits=cust_breaks) +
   geom_tile(color = "white") +
   scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
-                       midpoint = 0, limit = c(0, 1), space = "Lab", 
+                       midpoint = 0, limit = c(-1, 1), space = "Lab", 
                        name="Absolute Pearson\nCorrelation") +
   theme_minimal() + # minimal theme
   theme(axis.text.x = element_text(angle = 45, vjust = 1, 
