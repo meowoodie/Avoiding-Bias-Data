@@ -45,7 +45,7 @@ class OrthoDataGen(object):
         '''
         Sparse Orthogonal to Subgroup (SOG) algorithm
         '''
-        THETA_DETAULT = 1.
+        THETA_DETAULT = .1
         # update each column of matrix U and S.
         for j in range(self.k):
             print('[%s] updating %d/%d ...' % (arrow.now(), j+1, self.k), file=sys.stderr)
@@ -67,15 +67,16 @@ class OrthoDataGen(object):
                 # update u_j
                 # u_j is the column of matrix S, where len(u_j) = p, j = 1, ..., k
                 XT_sj        = matmul(self.X.T, self.S[:, j])
-                theta        = 0 if norm(XT_sj, ord=1) <= t else THETA_DETAULT
-                S_theta_x    = self.soft_threshold_operator(theta, XT_sj)
-                self.U[:, j] = S_theta_x / norm(S_theta_x + 1e-10)
+                # theta        = 0 if norm(XT_sj, ord=1) <= t else THETA_DETAULT
+                # S_theta_x    = self.soft_threshold_operator(theta, XT_sj)
+                # self.U[:, j] = S_theta_x / norm(S_theta_x + 1e-10)
+                self.U[:, j], theta, diff = self.U_j(XT_sj, t)
                 # log information if verbose is true
                 if verbose:
                     print('[%s] ---------------------------------' % arrow.now(), file=sys.stderr)
                     print('[%s] iter %d' % (arrow.now(), i), file=sys.stderr)
-                    print('[%s]\t||u_j||_1 = %.3f' %
-                        (arrow.now(), norm(self.U[:, j], ord=1)),
+                    print('[%s]\t||u_j||_1 = %.3f, theta = %.3f, norm diff = %.3f' %
+                        (arrow.now(), norm(self.U[:, j], ord=1), theta, diff),
                         file=sys.stderr)
                     print('[%s]\ts_j change is %.3f, u_j change is %.3f' %
                         (arrow.now(),
@@ -99,6 +100,35 @@ class OrthoDataGen(object):
         # return X_hat = S * U^T
         X_hat = matmul(np.array(d).T, self.U.T)
         return X_hat
+
+    def U_j(self, x, t, min_theta=0., max_theta=1., num_search=1000):
+        '''
+        Calculate U_j with indicated t value.
+        It will search all possible theta to make the difference |norm(u_j) - t|
+        as small as possible. And use this theta and input x to compute the
+        u_j with soft threshold operator.
+        '''
+        # initiate the optimal theta, u_j and minimal difference
+        min_diff  = 999
+        opt_theta = 0
+        opt_u_j   = 0
+        # search through all possible theta
+        for theta in np.linspace(min_theta, max_theta, num_search):
+            S_theta_x = self.soft_threshold_operator(theta, x)
+            u_j       = S_theta_x / norm(S_theta_x) if norm(S_theta_x) != 0 else 0
+            diff      = abs(norm(u_j, ord=1) - t)
+            # break the loop once have 0 diff
+            if diff == 0:
+                opt_u_j   = u_j
+                opt_theta = theta
+                min_diff  = norm(u_j, ord=1) - t
+                break
+            # look for the minimal diff
+            if abs(norm(u_j, ord=1) - t) < min_diff:
+                opt_u_j   = u_j
+                opt_theta = theta
+                min_diff  = norm(u_j, ord=1) - t
+        return opt_u_j, opt_theta, min_diff
 
     @staticmethod
     def soft_threshold_operator(theta, x):
