@@ -174,9 +174,7 @@ extraced keywords ids: [1056, 8633, 8011, 9072, 13018]
 
 ### Results
 
-![raw_bias](https://github.com/meowoodie/Avoiding-Bias-Data/blob/master/imgs/raw_bias.png)
-
-![bias_reduction](https://github.com/meowoodie/Avoiding-Bias-Data/blob/master/imgs/bias_reduction.png)
+![results](https://github.com/meowoodie/Avoiding-Bias-Data/blob/master/imgs/results.png)
 
 ### References
 
