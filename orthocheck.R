@@ -47,7 +47,7 @@ p + stat_cor(aes(color = keywords), label.y = 0.24)
 ## Covariance matrix plot
 
 # configuration
-file.path = '/Users/woodie/Desktop/workspace/Avoiding-Bias-Data/data/debug.recon.9.biased.keywords.txt'
+file.path = '/Users/woodie/Desktop/workspace/Avoiding-Bias-Data/data/recon.9.biased.keywords.txt'
 keywords  = c('burglary', 'robbery', 'carjacking', 'stole', 'jewelry', 'arrestee', 
               'shot', 'black', 'male', 'males', 'black_male', 'black_males')
 
@@ -90,7 +90,7 @@ ggheatmap   = ggplot(merged.cormat, aes(Var2, Var1, fill = value)) +
   geom_tile(color = "white") +
   scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                        midpoint = 0, limit = c(-1, 1), space = "Lab", 
-                       name="Absolute Pearson\nCorrelation") +
+                       name="Pearson\nCorrelation") +
   theme_minimal() + # minimal theme
   theme(axis.text.x = element_text(angle = 45, vjust = 1, 
                                    size = 12, hjust = 1)) +
