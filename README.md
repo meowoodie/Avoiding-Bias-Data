@@ -3,6 +3,16 @@ Avoiding-Bias-Data
 
 It is a method to preprocess the training data, producing an adjusted dataset that is independent of the group variable with minimum information loss from the [paper](https://arxiv.org/abs/1810.08255) in the references.
 
+The problem of preprocessing the data to ensure orthogonality to a group of keywords with minimum information loss can be expressed as a minimization of the Frobenius distance between the original data and the approximated version, under the constraint the inner product between the reconstructed data matrix and the group variable's matrix. Given the particular structure of assumption for the reconstructed data matrix, this leads to the following optimization problem:
+
+![optimization-problem](https://github.com/meowoodie/Avoiding-Bias-Data/blob/master/imgs/optimizatio-problem.png)
+
+This problem can be solved by *sparse orthogonal to subgroup algorithm* shown below:
+
+![algorithm](https://github.com/meowoodie/Avoiding-Bias-Data/blob/master/imgs/algorithm.png)
+
+In this repository, `orthogen.py` implements an Python class for reducing the bias in raw data by generating the reconstructed data matrix. In addition, `orthocheck.R` and `test_realdata.py` have various of helper functions for evaluating and testing the framework on real crime reports provided by the Atlanta Police Department.
+
 ### Examples
 
 ```python
@@ -161,6 +171,12 @@ extraced keywords ids: [1056, 8633, 8011, 9072, 13018]
 [2018-11-23T14:25:22.130107-05:00]	s_j change is 0.000, u_j change is 0.000
 [2018-11-23T14:25:22.130275-05:00]	Frobenius measure is 2.659
 ```
+
+### Results
+
+![raw_bias](https://github.com/meowoodie/Avoiding-Bias-Data/blob/master/imgs/raw_bias.png)
+
+![bias_reduction](https://github.com/meowoodie/Avoiding-Bias-Data/blob/master/imgs/bias_reduction.png)
 
 ### References
 
