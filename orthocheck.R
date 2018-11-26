@@ -47,8 +47,8 @@ p + stat_cor(aes(color = keywords), label.y = 0.24)
 ## Covariance matrix plot
 
 # configuration
-file.path = '/Users/woodie/Desktop/workspace/Avoiding-Bias-Data/data/recon.9.biased.keywords.txt'
-keywords  = c('burglary', 'robbery', 'carjacking', 'stole', 'jewelry', 'arrestee', 
+file.path = '/Users/woodie/Desktop/workspace/Avoiding-Bias-Data/data/recon.10.biased.keywords.txt'
+keywords  = c('burglary', 'robbery', 'carjacking', 'stole', 'jewelry', 'arrestee', 'jail',
               'shot', 'black', 'male', 'males', 'black_male', 'black_males')
 
 # Get upper triangle of the correlation matrix
@@ -66,7 +66,7 @@ cormat.list = list()
 pairs       = combn(keywords, 2)
 for(i in 1:ncol(pairs)) {
   comparison.df = keywords.df[, pairs[,i]]                          # get cols of specific keywords
-  # comparison.df = comparison.df[rowSums(comparison.df <= 0) <= 0, ] # remove rows with zero value
+  comparison.df = comparison.df[rowSums(comparison.df <= 0) <= 0, ] # remove rows with zero value
   # zero padding for those pairs of keywords without data entries
   if (nrow(comparison.df) <= 1){
     cormat.list[[i]] = data.frame('Var1'=pairs[,i][1], 'Var2'=pairs[,i][2], 'value'=0)

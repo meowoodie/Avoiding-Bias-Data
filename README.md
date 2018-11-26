@@ -3,7 +3,7 @@ Avoiding-Bias-Data
 
 It is a method to preprocess the training data, producing an adjusted dataset that is independent of the group variable with minimum information loss from the [paper](https://arxiv.org/abs/1810.08255) in the references.
 
-The problem of preprocessing the data to ensure orthogonality to a group of keywords with minimum information loss can be expressed as a minimization of the Frobenius distance between the original data and the approximated version, under the constraint the inner product between the reconstructed data matrix and the group variable's matrix. Given the particular structure of assumption for the reconstructed data matrix, this leads to the following optimization problem:
+The problem of preprocessing the data to ensure orthogonality to a group of variables with minimum information loss can be expressed as a minimization of the Frobenius distance between the original data and the approximated version, under the constraint the inner product between the reconstructed data matrix and the group variable's matrix. Given the particular structure of assumption for the reconstructed data matrix, this leads to the following optimization problem:
 
 ![optimization-problem](https://github.com/meowoodie/Avoiding-Bias-Data/blob/master/imgs/optimizatio-problem.png)
 

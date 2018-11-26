@@ -13,7 +13,7 @@ import numpy as np
 
 if __name__ == '__main__':
     # keywords that we are studying
-    X_KEYWORDS   = ['burglary', 'robbery', 'carjacking', 'stole', 'jewelry', 'arrestee', 'shot']
+    X_KEYWORDS   = ['burglary', 'robbery', 'carjacking', 'stole', 'jewelry', 'arrestee', 'jail', 'shot']
     Z_KEYWORDS   = ['black_male', 'black_males']
     C_KEYWORDS   = ['black', 'male', 'males']    # for comparison, no changes will be made on this group
     ALL_KEYWORDS = X_KEYWORDS + C_KEYWORDS + Z_KEYWORDS
@@ -43,4 +43,4 @@ if __name__ == '__main__':
 
     # save results
     result = np.concatenate([X_hat, C, Z], axis=1)
-    np.savetxt('data/debug.recon.9.biased.keywords.txt', result, delimiter=',')
+    np.savetxt('data/recon.10.biased.keywords.txt', result, delimiter=',')
