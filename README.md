@@ -179,3 +179,4 @@ extraced keywords ids: [1056, 8633, 8011, 9072, 13018]
 ### References
 
 - [Emanuele Aliverti, Kristian Lum, James E. Johndrow, David B. Dunson. "Removing the influence of a group variable in high-dimensional predictive modelling"](https://arxiv.org/abs/1810.08255)
+- [S. Zhu and Y. Xie. "Crime Linkage Detection by Spatio-Temporal Text Point Processes"](https://arxiv.org/abs/1902.00440)
