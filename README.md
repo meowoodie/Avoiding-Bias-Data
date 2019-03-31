@@ -1,4 +1,4 @@
-Avoiding-Bias-Data
+Data-Bias-Reduction
 ===
 
 It is a method to preprocess the training data, producing an adjusted dataset that is independent of the group variable with minimum information loss from the [paper](https://arxiv.org/abs/1810.08255) in the references.
